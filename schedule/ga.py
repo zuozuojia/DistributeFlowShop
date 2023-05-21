@@ -39,6 +39,9 @@ class Ga:
         self.global_best_wkc = None
         self.global_best_obj = None
         self.global_best_fitness = None
+        
+        self.ifshowdetails = 0
+        self.C_max_calcu = []
 
     # 【选择操作】轮盘赌选
     def selection_roulette(self, ):
@@ -70,8 +73,10 @@ class Ga:
             self.generation_objective[i, 1],
             self.generation_objective[i, 2],
         )
+        self.C_max_calcu.append(self.global_best_obj)
         logging.info(msg)
-        Utils.print(msg)
+        if self.ifshowdetails == 1:
+            Utils.print(msg)
 
     def objective_png(self, file_name="ObjectiveTrace", dpi=200, ):
         plt.figure(figsize=[9, 5])
@@ -116,6 +121,7 @@ class GaDFsp(Ga, DFsp):
         # 定义
         self.pop_job = np.zeros([self.pop_size, self.n], dtype=int)
         self.pop_wkc = np.zeros([self.pop_size, self.n], dtype=int)
+        
 
     def update_info_job(self, i, obj_new, info_new, job_new, ):
         if Utils.update_info(self.pop_objective[i], obj_new):
@@ -214,3 +220,5 @@ class GaDFsp(Ga, DFsp):
                 self.generation_objective = np.delete(self.generation_objective, k, axis=0)
                 self.generation_runtime = np.delete(self.generation_runtime, k, axis=0)
                 break
+        return self.global_best_obj
+    
